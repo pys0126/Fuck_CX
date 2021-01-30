@@ -23,7 +23,7 @@ class fuck_cx():
             pass
 
     #获取课程的名称和各任务的url
-    def re_cx(self):
+        def re_cx(self):
         cx_url = "http://mooc1-1.chaoxing.com/visit/interaction"
         cx_re = requests.Session()
         cx_res = cx_re.get(cx_url,cookies=self.cookies,headers=self.headers)
@@ -51,7 +51,7 @@ class fuck_cx():
             for all_zj in all_zj_html:
                 zj_title = all_zj.find("h2").find("a")["title"]
                 all_xj = all_zj.find_all(class_="leveltwo")
-                print("***********"+zj_title+"***********\n")
+                print("***********"+zj_title+"***********")
                 #各任务的url
                 for xj in all_xj:
                     xj_url = "https://mooc1-2.chaoxing.com" + xj.find(class_="articlename").find("a")["href"]
@@ -62,45 +62,44 @@ class fuck_cx():
                     #进入任务页
                     self.drive.get(xj_url)
                     #刷任务
-                    self.get_pv()
-                    
+                    self.get_pv()                 
             print("已完成："+str(int(x))+"号课程\n")
  
 
     #获取有多少个ppt和视频，并刷任务
     def get_pv(self):
-        drive.switch_to.frame("iframe")
-        ppt = drive.find_elements_by_xpath('//iframe[@class="ans-attach-online insertdoc-online-ppt"]') 
-        video = drive.find_elements_by_xpath('//iframe[@class="ans-attach-online ans-insertvideo-online"]')
+        self.drive.switch_to.frame("iframe")
+        ppt = self.drive.find_elements_by_xpath('//iframe[@class="ans-attach-online insertdoc-online-ppt"]') 
+        video = self.drive.find_elements_by_xpath('//iframe[@class="ans-attach-online ans-insertvideo-online"]')
         pp = []
         vv = []
-        
+
         for v in video:
             vv.append(v)
-            time.sleep(5)
+            time.sleep(1)
             try:
-                drive.switch_to.frame(v)
+                self.drive.switch_to.frame(v)
                 self.falsh_video()
             except:
-                drive.switch_to.parent_frame()
+                self.drive.switch_to.parent_frame()
                 if video:
-                    drive.switch_to.frame(v)
+                    self.drive.switch_to.frame(v)
                     self.falsh_video()
                 else:
-                    drive.switch_to.frame("frame_content")
-                    drive.switch_to.frame("time")
-                    drive.find_element_by_xpath('//button[@class="vjs-big-play-button"]').click()
-        print("\n完成了"+str(len(vv))+"个视频")
+                    self.drive.switch_to.frame("frame_content")
+                    self.drive.switch_to.frame("time")
+                    self.drive.find_element_by_xpath('//button[@class="vjs-big-play-button"]').click()
+        print("完成了"+str(len(vv))+"个视频")
 
         for p in ppt:
             pp.append(p)
             try:
-                drive.switch_to.frame(p) #进入第二层嵌套网页
-                self.falsh_ppt()
+                self.drive.switch_to.frame(p) #进入第二层嵌套网页
+                self.falsh_ppt()    
             except:
-                drive.switch_to.parent_frame() #返回上一级frame
+                self.drive.switch_to.parent_frame() #返回上一级frame
                 if ppt:
-                    drive.switch_to.frame(p)
+                    self.drive.switch_to.frame(p)
                     self.falsh_ppt()
 
         print("完成了"+str(len(pp))+"个PPT\n")
@@ -109,31 +108,38 @@ class fuck_cx():
     #刷PPt
     def falsh_ppt(self):
         time.sleep(0.5)
-        ppt_size = int(drive.find_element_by_xpath('//span[@class="all"]').text) #获取ppt页数
-        try:
-            for ps in range(ppt_size):
-                drive.find_element_by_xpath('//a[@id="ext-gen1043"]').click()
-        except:
-            pass
-        return print(ps+1)
+        ppt_size = int(self.drive.find_element_by_xpath('//span[@class="all"]').text) #获取ppt页数
+        for ps in range(ppt_size):
+            self.drive.find_element_by_xpath('//a[@id="ext-gen1043"]').click()
+        print(ps+"页PPT")
 
 
     #刷视频
     def falsh_video(self):
-        drive.find_element_by_xpath('//button[@title="播放视频"]').click()
-        # time.sleep(0)
-        # drive.switch_to_alert().send_keys("yes")
-        # drive.switch_to_alert().accept()
-        
+        self.drive.find_element_by_xpath('//button[@title="播放视频"]').click()
+        if self.drive.find_element_by_xpath('//span[@class="vjs-duration-display"]'):
+            print("\nstart")
+            time.sleep(0.3)
+            min = self.drive.find_element_by_xpath('//span[@class="vjs-duration-display"]').text.split(":")[0]
+            sec = self.drive.find_element_by_xpath('//span[@class="vjs-duration-display"]').text.split(":")[1]
+            data_time = (int(min)*60+int(sec))/16
+            print("请等待"+str(data_time+1)+"秒")
+            time.sleep(data_time)
+            # time.sleep(0.2)
+            # self.drive.switch_to.alert().send_keys("yes")
+            # time.sleep(0.2)
+            # self.drive.switch_to.alert().accept()
+        else:
+            print("NO")
 
     #显示出验证码并消除验证界面
     def error(self):
         try:
             time.sleep(1)
-            if drive.find_element_by_xpath('//i[@class="warn"]'):
-                drive.save_screenshot('pictures.png')  # 全屏截图
+            if self.drive.find_element_by_xpath('//i[@class="warn"]'):
+                self.drive.save_screenshot('pictures.png')  # 全屏截图
                 page_snap_obj = Image.open('pictures.png')
-                img = drive.find_element_by_xpath('//img[@id="ccc"]')  # 验证码元素位置
+                img = self.drive.find_element_by_xpath('//img[@id="ccc"]')  # 验证码元素位置
                 time.sleep(1)
                 location = img.location
                 size = img.size  # 获取验证码的大小参数
@@ -143,8 +149,8 @@ class fuck_cx():
                 bottom = top + size['height']
                 image_obj = page_snap_obj.crop((left, top, right, bottom))  # 按照验证码的长宽，切割验证码
                 image_obj.show()
-                drive.find_element_by_xpath('//input[@class="yzmInp"]').send_keys(input("输入验证码："))
-                drive.find_element_by_xpath('//input[@class="submit"]').click()
+                self.drive.find_element_by_xpath('//input[@class="yzmInp"]').send_keys(input("输入验证码："))
+                self.drive.find_element_by_xpath('//input[@class="submit"]').click()
                 time.sleep(1)
         except:
             pass
