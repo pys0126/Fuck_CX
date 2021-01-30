@@ -15,7 +15,6 @@ class fuck_cx():
             drive.get("http://mooc1-1.chaoxing.com/visit/interaction")
             user = drive.find_element_by_xpath('//input[@id="phone"]')
             user.send_keys(input("输入手机号或用户名："))
-            
             password = drive.find_element_by_xpath('//input[@id="pwd"]')
             password.send_keys(input("输入密码："))
             
@@ -163,6 +162,7 @@ if __name__ == "__main__":
         chrome_opt = webdriver.ChromeOptions()
         chrome_opt.add_argument("--headless")
         chrome_opt.add_argument("--disable-gpu")
+        chrome_options.add_argument("--mute-audio")
         chrome_opt.add_argument('disable-infobars')
         个人资料路径 = r"将这里替换成路径"  #在Chrome访问chrome://version/找到个人资料路径
         webdriver_path = r"将这里替换成路径" #填入你下载的Webdriver路径
