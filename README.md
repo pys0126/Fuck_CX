@@ -1,5 +1,5 @@
-# Fuck_CX
-目前的功能：过PPT任务，视频任务（只支持点击开始播放按钮）
+# 去TM的学习通
+**貌似仅支持CQCIVC**，目前的功能：过PPT任务，视频任务（只支持点击开始播放按钮）
 # 前提需要
 ## Chrome浏览器及Webdriver
 * Chrome下载地址：https://www.google.cn/chrome/
