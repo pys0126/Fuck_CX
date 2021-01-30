@@ -1,2 +1,21 @@
 # Fuck_CX
-学习通自动看课
+目前的功能：过PPT任务，视频任务（只支持点击开始播放按钮）
+# 前提需要
+## Chrome浏览器及Webdriver
+* Chrome下载地址：https://www.google.cn/chrome/
+* Webdriver下载地址：http://npm.taobao.org/mirrors/chromedriver/
+## 脚本设置
+* 在脚本167行设置Chrome个人资料路径（在Chrome访问chrome://version/找到个人资料路径）
+* 在脚本168行设置webdriver_path
+## Cookie（用于requests）
+获取cookie：
+* 1.访问：http://mooc1-1.chaoxing.com/visit/interaction
+* 2.登陆后按F12点击Network刷新页面
+* 3.点击XHR，点击workTestPendingNew
+* 4.将Cookie项的值全部复制下来
+## 手机号或用户名和密码（用于selenium）
+* 按脚本提示输入即可
+# 可能会实现的功能
+* 1.直接完成视频（利用刷网课扩展）
+* 2.不需要Cookie（只利用selenium，效率可能会降低）
+* 3.答题（再说吧...）
