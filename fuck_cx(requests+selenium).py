@@ -164,8 +164,8 @@ if __name__ == "__main__":
         chrome_opt.add_argument("--headless")
         chrome_opt.add_argument("--disable-gpu")
         chrome_opt.add_argument('disable-infobars')
-        个人资料路径 = r"/home/uodrad/.config/google-chrome/Default"  #在Chrome访问chrome://version/找到个人资料路径
-        webdriver_path = r"/usr/local/bin/chromedriver" #填入你下载的Webdriver路径
+        个人资料路径 = r"将这里替换成路径"  #在Chrome访问chrome://version/找到个人资料路径
+        webdriver_path = r"将这里替换成路径" #填入你下载的Webdriver路径
         chrome_opt.add_argument("--user-data-dir="+个人资料路径)
         drive = webdriver.Chrome(webdriver_path,options=chrome_opt)
         run = fuck_cx(cookies,headers,drive)
