@@ -15,10 +15,10 @@ class fuck_cx():
             drive.get("http://mooc1-1.chaoxing.com/visit/interaction")
             user = drive.find_element_by_xpath('//input[@id="phone"]')
             user.send_keys(input("输入手机号或用户名："))
-            # user.send_keys("17783880328")
+            
             password = drive.find_element_by_xpath('//input[@id="pwd"]')
             password.send_keys(input("输入密码："))
-            # password.send_keys("Darkabyss86734")
+            
             drive.find_element_by_xpath('//button[@id="loginBtn"]').click()
         except:
             pass
@@ -153,7 +153,7 @@ class fuck_cx():
 if __name__ == "__main__":
     try:
         c = input("输入cookie：") 
-        # c = 'lv=0; fid=9835; _uid=158574154; uf=14b6b1b3f40d8f90115aff9a480c2946b4cb11962702d83e6ab662843a689ab9f05660a41ce3e512c075c2db39694388913b662843f1f4ad6d92e371d7fdf64432ff693cabccda6bce915f659a7402a85558ebfe920d455c987c077384b9cd114a837b5069d5f848; _d=1611930475086; UID=158574154; vc=F94F84B07C4EEB1C0A35AE8E68B11954; vc2=180E7C0D27DD393A92B8E3292E348785; vc3=SdCRay59rds3sPjzE8OaaUPd8NJklP%2BidmNU7scG0T4%2F4X8CjJK6DIY3r5w9jV9ycO12jb2WXf%2BDddkQTPO2FHuJh%2F4jqdAik%2BxNRyGW%2FH%2BSP4og71HZXHGsBCpAZg5t2BzqEXzzCR%2BkZhyyIk%2Bxde7RGs856D21IkEy6K3qDSk%3Dfb7c5762e799b9ea1c1b4b891c239a2f; xxtenc=35b1b542b12a3e45ef347fd8165cab82; DSSTASH_LOG=C_38-UN_9255-US_158574154-T_1611930475087; source=""; spaceFid=9835; spaceRoleId=""; k8s=51775cddee2e06c0058c81fe70b0c7be0024790b; jrose=B3450BD3B659C7D84D262ED94FD78578.mooc-2133235240-jpzw3; tl=1; route=ac9a7739314fa6817cbac7e56032374b; thirdRegist=0; rt=-2'
+        
         cookie = r"{}".format(c)
         cookies = {}
         for line in cookie.split(';'):
