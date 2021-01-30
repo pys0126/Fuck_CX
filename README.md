@@ -5,7 +5,8 @@
 * 安装Python3
   - Windows和MacOS：https://www.python.org/downloads/release/python-379/
   - Linux自带
-* 安装依赖：pip3 install -r requirements.txt
+* 安装依赖：
+  - 在命令行窗口运行`pip3 install -r requirements.txt`
 ## Chrome浏览器及Webdriver
 * Chrome下载地址：https://www.google.cn/chrome/
 * Webdriver下载地址：http://npm.taobao.org/mirrors/chromedriver/
