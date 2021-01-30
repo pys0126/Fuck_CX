@@ -1,5 +1,5 @@
 # 去TM的学习通
-**貌似仅支持CQCIVC学院**，目前的功能：过PPT任务，视频任务（只支持点击开始播放按钮）,捕获异常界面要求输入的验证码
+**貌似仅支持CQCIVC学院**，目前的功能：过PPT任务，视频任务（16倍播放按钮）,捕获异常界面要求输入的验证码
 # 前提需要
 ## 安装Python3和相关依赖
 * 安装Python3
@@ -10,6 +10,8 @@
 ## Chrome浏览器及Webdriver
 * Chrome下载地址：https://www.google.cn/chrome/
 * Webdriver下载地址：http://npm.taobao.org/mirrors/chromedriver/
+## 下载Chrome网课扩展
+* 下载地址：https://github.com/CodFrm/cxmooc-tools/releases （如何添加Chrome扩展自行百度）
 ## 脚本设置
 * 在脚本167行设置Chrome个人资料路径（在Chrome访问chrome://version/找到个人资料路径）
 * 在脚本168行设置webdriver_path
