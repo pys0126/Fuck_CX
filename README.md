@@ -13,8 +13,8 @@
 ## 下载Chrome网课扩展
 * 下载地址：https://github.com/CodFrm/cxmooc-tools/releases （如何添加Chrome扩展自行百度）
 ## 脚本设置
-* 在脚本167行设置Chrome个人资料路径（在Chrome访问chrome://version/找到个人资料路径）
-* 在脚本168行设置webdriver_path
+* 在脚本173行设置Chrome个人资料路径（在Chrome访问chrome://version/找到个人资料路径）
+* 在脚本174行设置webdriver_path
 ## Cookie（用于requests）
 获取cookie：
 * 1.访问：http://mooc1-1.chaoxing.com/visit/interaction
