@@ -23,7 +23,7 @@ class fuck_cx():
             pass
 
     #获取课程的名称和各任务的url
-        def re_cx(self):
+    def re_cx(self):
         cx_url = "http://mooc1-1.chaoxing.com/visit/interaction"
         cx_re = requests.Session()
         cx_res = cx_re.get(cx_url,cookies=self.cookies,headers=self.headers)
