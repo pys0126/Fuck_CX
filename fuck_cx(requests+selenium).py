@@ -44,8 +44,8 @@ class fuck_cx():
             x = input("请输入课程序号(Ctrl+C退出程序)：")
             kc_page_url = "https://mooc1-1.chaoxing.com" + cx_bs.find_all(class_="courseItem curFile")[int(x)-1].find(class_="courseName")["href"]
             print(kc_page_url)
-            list_page_re = requests.Session()
-            list_page_res = list_page_re.get(kc_page_url,cookies=self.cookies,headers=self.headers)
+        
+            list_page_res = cx_re.get(kc_page_url,cookies=self.cookies,headers=self.headers)
             list_page_bs4 = BeautifulSoup(list_page_res.text,"lxml")
             all_zj_html = list_page_bs4.find_all(class_="units")
             for all_zj in all_zj_html:
