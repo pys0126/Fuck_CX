@@ -1,22 +1,35 @@
-from selenium import webdriver
+from msedge.selenium_tools import Edge, EdgeOptions
 from bs4 import BeautifulSoup
 from PIL import Image
 import requests 
+import base64
+import random
+import json
 import time
-import os
+import getpass
+
+######################需要设置的信息##############################
+webdriver_path = r"" #引号内填入你下载的Webdriver路径
+phone = ""           #引号内填入你的手机号
+password = ""        #引号内填入你的密码
+################################################################
+
+user_name = getpass.getuser() #获取当前系统用户名
+user_data = f"C:\\Users\\{user_name}\\AppData\\Local\\Microsoft\\Edge\\User Data"
 
 class fuck_cx():
-
-    def __init__(self,cookie,headers,drive):
+    def __init__(self,drive,headers,phone,password):
         self.drive = drive
-        self.cookies = cookie
         self.headers = headers
+        self.phone = phone
+        self.password = password
         try:
             drive.get("http://mooc1-1.chaoxing.com/visit/interaction")
             user = drive.find_element_by_xpath('//input[@id="phone"]')
-            user.send_keys(input("输入手机号或用户名："))
+            user.send_keys(self.phone)
+            
             password = drive.find_element_by_xpath('//input[@id="pwd"]')
-            password.send_keys(input("输入密码："))
+            password.send_keys(self.password)
             
             drive.find_element_by_xpath('//button[@id="loginBtn"]').click()
         except:
@@ -24,45 +37,81 @@ class fuck_cx():
 
     #获取课程的名称和各任务的url
     def re_cx(self):
-        cx_url = "http://mooc1-1.chaoxing.com/visit/interaction"
-        cx_re = requests.Session()
-        cx_res = cx_re.get(cx_url,cookies=self.cookies,headers=self.headers)
-        cx_bs = BeautifulSoup(cx_res.text,"lxml")
-        if cx_bs.find(class_="lg-title"):
-            print("登录失败！")
-            quit()
-        else:
-            print("登录成功！")
-            print("---------课程列表----------")
-            kc_li = cx_bs.find_all(class_="courseItem curFile")
-            k = 0
-            for title in kc_li:
-                k += 1
-                kc_titile = title.find(class_="courseName")["title"]
-                print(str(k)+": "+kc_titile)
-            print("--------------------------")
-            x = input("请输入课程序号(Ctrl+C退出程序)：")
-            kc_page_url = "https://mooc1-1.chaoxing.com" + cx_bs.find_all(class_="courseItem curFile")[int(x)-1].find(class_="courseName")["href"]
-            print(kc_page_url)
-        
-            list_page_res = cx_re.get(kc_page_url,cookies=self.cookies,headers=self.headers)
-            list_page_bs4 = BeautifulSoup(list_page_res.text,"lxml")
-            all_zj_html = list_page_bs4.find_all(class_="units")
-            for all_zj in all_zj_html:
-                zj_title = all_zj.find("h2").find("a")["title"]
-                all_xj = all_zj.find_all(class_="leveltwo")
-                print("***********"+zj_title+"***********")
-                #各任务的url
-                for xj in all_xj:
-                    xj_url = "https://mooc1-2.chaoxing.com" + xj.find(class_="articlename").find("a")["href"]
-                    xj_title = xj.find(class_="articlename").find("a")["title"]
-                    print("开始任务："+xj_title)
+        session = requests.Session()
+        url = 'http://mooc2-ans.chaoxing.com/visit/interaction'
+        re = session.get(url)
+        bs = BeautifulSoup(re.text,"lxml")
+
+        fid = bs.find(id="fid")["value"]
+        phone = self.phone
+        password = self.password
+        bytes_pwd = password.encode("utf-8")
+        pwd = base64.b64encode(bytes_pwd)
+        refer = "http%3A%2F%2Fi.chaoxing.com"
+        t = bs.find(id="t")["value"]
+        forbidotherlogin = 0
+        data = {                  #获取登录需要的数据
+            'fid':fid,
+            'uname':phone,
+            'password':pwd,
+            'refer':refer,
+            't':t,
+            'forbidotherlogin':forbidotherlogin
+            }
+        url = "http://passport2.chaoxing.com/fanyalogin"
+        re = session.post(url=url,data=data)
+        re_json = re.text
+        re_dict = json.loads(re_json)
+        if re_dict["status"]:
+            print("登录成功！\n--------------------------------")
+            url = 'http://mooc2-ans.chaoxing.com/visit/courses/list?rss=1&start=0&size=500&catalogId=0&searchname='
+            re = session.get(url)
+            bs = BeautifulSoup(re.text,"lxml")
+            kc_bs = bs.find_all(class_="inlineBlock")
+            x = 0
+            kc_url = []
+            for kb in kc_bs:
+                x += 1
+                kc_url.append("http://mooc2-ans.chaoxing.com" + kb.find("a")["href"])
+                kc_title = kb.find("a").find("span")["title"]
+                print(f"课程序号{x}："+kc_title)
+            size = input("--------------------------------\n请输入要完成的课程序号：")
+            kc_page_url = kc_url[int(size)-1]
+            kc_page_re = session.get(kc_page_url)
+            kc_page_bs = BeautifulSoup(kc_page_re.text,"lxml")
+            #kc_page_url_one参数获取
+            courseid = kc_page_bs.find(id="courseid")["value"]
+            clazzid = kc_page_bs.find(id="clazzid")["value"]
+            cpi = kc_page_bs.find(id="cpi")["value"]
+            ut = kc_page_bs.find(id="heardUt")["value"]
+            enc = kc_page_bs.find(id="oldenc")["value"]
+            openc = kc_page_bs.find(id="openc")["value"]
+            #传入kc_page_url_one参数
+            kc_page_url_one = f"http://mooc2-ans.chaoxing.com/mycourse/studentcourse?courseid={courseid}&clazzid={clazzid}&cpi={cpi}&ut={ut}"
+            kc_page_one_re = session.get(kc_page_url_one)
+            kc_page_one_bs = BeautifulSoup(kc_page_one_re.text,"lxml")
+            xj_catalog_title = kc_page_one_bs.find_all(class_="catalog_title")
+            zj_catalog_name = kc_page_one_bs.find_all(class_="catalog_name")
+            zj_title = []
+            for zcn in zj_catalog_name:
+                try:
+                    zj_title.append(zcn.find("span")["title"])
+                except:
+                    continue
+            x = 0
+            for xct in xj_catalog_title:
+                chapterid = xct.find(type="checkbox")["value"]
+                if chapterid:
+                    rw_url = f"http://mooc1.chaoxing.com/mycourse/studentstudy?chapterId={chapterid}&courseId={courseid}&clazzid={clazzid}&enc={enc}&mooc2=1&cpi={cpi}&openc={openc}"
                     #检测异常页面
                     self.error()
                     #进入任务页
-                    self.drive.get(xj_url)
+                    self.drive.get(rw_url)
                     #刷任务
-                    self.get_pv()                 
+                    self.get_pv()             
+                else:
+                    print("\n"+zj_title[x])
+                    x += 1
             print("已完成："+str(int(x))+"号课程\n")
  
 
@@ -108,20 +157,24 @@ class fuck_cx():
     #刷PPt
     def falsh_ppt(self):
         time.sleep(0.5)
-        ppt_size = int(self.drive.find_element_by_xpath('//span[@class="all"]').text) #获取ppt页数
-        for ps in range(ppt_size):
-            self.drive.find_element_by_xpath('//a[@id="ext-gen1043"]').click()
-        print(ps+"页PPT")
+        drive = self.drive
+        try:
+            ppt_size = int(drive.find_element_by_xpath('//span[@class="all"]').text) #获取ppt页数
+            for ps in range(ppt_size):
+                drive.find_element_by_xpath('//a[@id="ext-gen1043"]').click()
+        except:
+            print(str(ps)+"页PPT")
 
 
     #刷视频
     def falsh_video(self):
-        self.drive.find_element_by_xpath('//button[@title="播放视频"]').click()
-        if self.drive.find_element_by_xpath('//span[@class="vjs-duration-display"]'):
+        drive = self.drive
+        drive.find_element_by_xpath('//button[@title="播放视频"]').click()
+        if drive.find_element_by_xpath('//span[@class="vjs-duration-display"]'):
             print("\nstart")
-            time.sleep(0.3)
-            min = self.drive.find_element_by_xpath('//span[@class="vjs-duration-display"]').text.split(":")[0]
-            sec = self.drive.find_element_by_xpath('//span[@class="vjs-duration-display"]').text.split(":")[1]
+            time.sleep(0.5)
+            min = drive.find_element_by_xpath('//span[@class="vjs-duration-display"]').text.split(":")[0]
+            sec = drive.find_element_by_xpath('//span[@class="vjs-duration-display"]').text.split(":")[1]
             data_time = (int(min)*60+int(sec))/16
             print("请等待"+str(data_time+1)+"秒")
             time.sleep(data_time)
@@ -157,31 +210,42 @@ class fuck_cx():
 
 if __name__ == "__main__":
     try:
-        c = input("输入cookie：") 
-        
-        cookie = r"{}".format(c)
-        cookies = {}
-        for line in cookie.split(';'):
-            key, value = line.split('=', 1)
-            cookies[key] = value
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"}
-        chrome_opt = webdriver.ChromeOptions()
-        chrome_opt.add_argument("--headless")
-        chrome_opt.add_argument("--disable-gpu")
-        chrome_opt.add_argument("--mute-audio")
-        chrome_opt.add_argument('disable-infobars')
-        个人资料路径 = r"将这里替换成路径"  #在Chrome访问chrome://version/找到个人资料路径
-        webdriver_path = r"将这里替换成路径" #填入你下载的Webdriver路径
-        chrome_opt.add_argument("--user-data-dir="+个人资料路径)
-        drive = webdriver.Chrome(webdriver_path,options=chrome_opt)
-        run = fuck_cx(cookies,headers,drive)
+        #edge设置
+        edge_opt = EdgeOptions()
+        edge_opt.use_chromium = True
+        edge_opt.add_argument('lang=zh_CN.UTF-8')
+        # edge_opt.add_argument("--headless")
+        # edge_opt.add_argument("--disable-gpu")
+        edge_opt.add_argument("--mute-audio")
+        edge_opt.add_argument('disable-infobars')
+        edge_opt.add_argument("--user-data-dir="+user_data)
+        edge_opt.add_experimental_option('excludeSwitches', ['enable-automation'])
+        drive = Edge(webdriver_path,options=edge_opt)
+        #随机请求头信息
+        headers = {
+        'Accept':'text/html, */*; q=0.01',
+        'Accept-Encoding':'gzip, deflate',
+        'Accept-Language':'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+        'Cache-Control':'no-cache',
+        'Connection':'keep-alive',
+        'Host':'mooc1.chaoxing.com',
+        'Pragma':'no-cache',
+        'User-Agent':'',
+        'X-Requested-With':'XMLHttpRequest'
+        }
+        user_agent_list = [ 
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36",
+        "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)",
+        "Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10.5; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15"
+        ]
+        headers['User-Agent'] = random.choice(user_agent_list)
+        #运行。。。
+        run = fuck_cx(drive,headers,phone,password)
         run.re_cx()
     except KeyboardInterrupt:
         quit()
         drive.close()
-
-
-
-
-        
-        
