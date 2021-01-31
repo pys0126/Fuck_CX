@@ -214,7 +214,7 @@ if __name__ == "__main__":
         edge_opt = EdgeOptions()
         edge_opt.use_chromium = True
         edge_opt.add_argument('lang=zh_CN.UTF-8')
-        # edge_opt.add_argument("--headless")
+        edge_opt.add_argument("--headless")
         # edge_opt.add_argument("--disable-gpu")
         edge_opt.add_argument("--mute-audio")
         edge_opt.add_argument('disable-infobars')
