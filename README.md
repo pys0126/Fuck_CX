@@ -9,7 +9,7 @@
   - 在命令行窗口运行`pip3 install -r requirements.txt`
 ## 下载Edge浏览器的webdriver
 * 在Edge浏览器输入edge://version/查看版本，然后下载**对应版本的Webdriver**
-* Webdriver下载地址：http://npm.taobao.org/mirrors/chromedriver/
+* Webdriver下载地址：https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
 ## 下载网课扩展
 * 下载地址：https://github.com/CodFrm/cxmooc-tools/releases/download/v2.5.0/cxmooc-tools.zip （如何添加edge扩展自行百度）
 ## 运行脚本
